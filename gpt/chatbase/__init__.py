@@ -12,11 +12,11 @@ class Completion:
     messages: list[dict],
   ) -> CompletionResponse:
     res = requests.post("https://www.chatbase.co/api/fe/chat", headers={
-      "referer": "https://www.chatbase.co/chatbot-iframe/0nmlH49YOz2t8e7urE9QA",
-      "User-Agent": ua.chrome
+      "referer": "https://www.chatbase.co/chatbot-iframe/quran---tafseer-saadi-pdf-wbgknt7zn",
+      "User-Agent": ua.random
     }, json={
       "captchaCode": "hadsa",
-      "chatId": "0nmlH49YOz2t8e7urE9QA",
+      "chatId": "quran---tafseer-saadi-pdf-wbgknt7zn",
       "messages": messages
     }, stream=True)
 
