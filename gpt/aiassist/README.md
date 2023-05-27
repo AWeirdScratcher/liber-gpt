@@ -47,7 +47,7 @@ print(response.content)
 from aiassist import Completion
 
 while True:
-  for chunk in Completion.create(prompt=input("> "), parentMessageId=parent):
+  for chunk in Completion.create(prompt=input("> ")):
     print(chunk, end="", flush=True)
 
   print()

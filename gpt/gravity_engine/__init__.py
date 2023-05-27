@@ -42,7 +42,7 @@ class Completion:
                           "model": model,
                           "presence_penalty": 0,
                           "stream": True,
-                          "temperature": 0.5
+                          "temperature": temperature
                         },
                         stream=True)
 

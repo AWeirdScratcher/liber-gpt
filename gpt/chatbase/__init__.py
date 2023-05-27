@@ -20,7 +20,7 @@ class Completion:
       "messages": messages
     }, stream=True)
 
-    if res.status != 200:
+    if res.status_code != 200:
       raise Error("Uncaught, \n" + res.content.decode('utf-8'))
 
     return CompletionResponse(res)
@@ -43,7 +43,6 @@ class CompletionResponse:
 
 class Role:
   """Shortcut for the `messages` object."""
-  system = lambda t: { "role": "system", "content": t }
   user = lambda t: { "role": "user", "content": t }
   assistant = lambda t: { "role": "assistant", "content": t }
 
