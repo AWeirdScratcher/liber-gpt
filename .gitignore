@@ -1,0 +1,11 @@
+*/__pycache__/
+*.py[cod]
+*$py.class
+venv/
+liber-chat/
+.replit
+poetry.lock
+pyproject.toml
+.config/
+.git/
+replit.nix
