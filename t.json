@@ -1,1 +1,0 @@
-{"role": "assistant", "id": "chatcmpl-7JKIv6HUvshjy4my06QombB5nrFWR", "parentMessageId": "00b97e9b-1574-4a4b-a9a9-f7d0187ac089", "text": "", "detail": {"id": "chatcmpl-7JKIv6HUvshjy4my06QombB5nrFWR", "object": "chat.completion.chunk", "created": 1684840637, "model": "gpt-3.5-turbo-0301", "choices": [{"delta": {"role": "assistant"}, "index": 0, "finish_reason": null}]}}

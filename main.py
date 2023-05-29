@@ -1,13 +1,5 @@
-from gpt.chatbase import Completion, Role
+from gpt.usesless import Account, Completion, Context
 
-messages = []
-while True:
-  messages.append(Role.user(input("> ")))
-
-  gathered = ""
-  for chunk in Completion.create(messages):
-    print(chunk, end="", flush=True)
-    gathered += chunk
-  messages.append(Role.assistant(gathered))
-
-  print()
+@Completion.create("Hello, World!")
+def callback(chunk: Context):
+  print(chunk.content, end="", flush=True)
