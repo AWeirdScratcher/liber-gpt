@@ -11,13 +11,13 @@ class Completion:
   def create(
     messages: list[dict],
     temperature: float = 1.0,
-    persence_penalty: float = 0.0
+    presence_penalty: float = 0.0
   ) -> CompletionResponse:
     res = requests.post(url, json={
       "messages": messages,
       "model": "gpt-3.5-turbo",
       "stream": True,
-      "presence_penalty": 0,
+      "presence_penalty": presence_penalty,
       "temperature": 1
     }, headers={
       "User-Agent": ua.random,
@@ -43,6 +43,12 @@ class CompletionResponse:
   @property
   def content(self):
     return self.fetched or self.req.content.decode('utf-8')
+
+class Role:
+  system = lambda t: { "role": "system", "content": t }
+  user = lambda t: { "role": "user", "content": t }
+  assistant = lambda t: { "role": "assistant" "content": t }
+  
 
 class Error(Exception):
   pass
