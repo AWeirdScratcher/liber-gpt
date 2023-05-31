@@ -122,7 +122,7 @@ class Account:
       with open("tokens.txt", "a") as file:
         file.write(token + "\n")
 
-def generate(account: Account, prompt, systemMessage, parentMessageId, presence_penalty, temperature, creation_function: Callable = None):
+def generate(account: Account, prompt, systemMessage, parentMessageId, presence_penalty, temperature, proxies, creation_function: Callable = None):
   """
   Generate response from the prompt.
   """
@@ -143,7 +143,7 @@ def generate(account: Account, prompt, systemMessage, parentMessageId, presence_
         "temperature": temperature
       }
     }
-  }, stream=True)
+  }, stream=True, proxies=proxies)
   
   if generated.status_code != 200:
     raise Error(generated.content)
@@ -174,7 +174,8 @@ class Completion:
     systemMessage: str = None,
     presence_penalty: float = 0,
     temperature: float = 1.0,
-    parentMessageId: str = None
+    parentMessageId: str = None,
+    proxies: dict = None
   ):
     if not account:
       account = Account()
@@ -184,11 +185,11 @@ class Completion:
       if account.line == "no-auto-load":
         @account.wait_until_receive_email
         def callback(_):
-          for chunk in generate(account, prompt, systemMessage, parentMessageId, presence_penalty, temperature):
+          for chunk in generate(account, prompt, systemMessage, parentMessageId, presence_penalty, temperature, proxies):
             creation_function(chunk)
       else:
         try:
-          for chunk in generate(account, prompt, systemMessage, parentMessageId, presence_penalty, temperature):
+          for chunk in generate(account, prompt, systemMessage, parentMessageId, presence_penalty, temperature, proxies):
             creation_function(chunk)
         except Exception as err:
           # due to the token is invalid, take away!
