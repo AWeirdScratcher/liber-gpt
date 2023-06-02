@@ -8,7 +8,7 @@ import random
 import base64
 import requests
 import threading
-import fake_useragent
+import fake_useragent # pip install fake-useragent
 from faker import Faker # pip install faker
 from typing import Callable
 from pydantic import BaseModel # pip install pydantic
@@ -24,14 +24,17 @@ class Account:
     self.save_token = save_token
 
     if auto_load:
-      with open("tokens.txt", "r") as file:
-        for line in file.readlines():
-          if line and line != "\n":
-            self.token = line.replace("\n", "")
-            self.ua = fake_useragent.UserAgent().random
-            self.line = "used"
-            warn("Using pre-generated tokens.")
-            return None # skip the following parts
+      try:
+        with open("tokens.txt", "r") as file:
+          for line in file.readlines():
+            if line and line != "\n":
+              self.token = line.replace("\n", "")
+              self.ua = fake_useragent.UserAgent().random
+              self.line = "used"
+              warn("Using pre-generated tokens.")
+              return None # skip the following parts
+      except:
+        pass # noqa
       # no tokens found, jump outside of the `if` block.
 
     self.initialize()
@@ -122,7 +125,7 @@ class Account:
       with open("tokens.txt", "a") as file:
         file.write(token + "\n")
 
-def generate(account: Account, prompt, systemMessage, parentMessageId, presence_penalty, temperature, proxies, creation_function: Callable = None):
+def generate(account: Account, prompt, systemMessage, parentMessageId, presence_penalty, temperature, creation_function: Callable = None):
   """
   Generate response from the prompt.
   """
@@ -143,7 +146,7 @@ def generate(account: Account, prompt, systemMessage, parentMessageId, presence_
         "temperature": temperature
       }
     }
-  }, stream=True, proxies=proxies)
+  }, stream=True)
   
   if generated.status_code != 200:
     raise Error(generated.content)
@@ -159,7 +162,7 @@ def generate(account: Account, prompt, systemMessage, parentMessageId, presence_
       finished = response.get('ipChatCount') is not None
       
       def __repr__(self):
-        return f"<class Context parent={self.parent} content={self.content} ip_chat_count={self.ip_chat_count} used_integral={self.used_integral} finished={self.finished}>"
+        return f"<class Context parent='{self.parent}' content='{self.content}' ip_chat_count={self.ip_chat_count} used_integral={self.used_integral} finished={self.finished}>"
 
     if creation_function:
       creation_function(ResContext())
@@ -174,8 +177,7 @@ class Completion:
     systemMessage: str = None,
     presence_penalty: float = 0,
     temperature: float = 1.0,
-    parentMessageId: str = None,
-    proxies: dict = None
+    parentMessageId: str = None
   ):
     if not account:
       account = Account()
@@ -185,11 +187,11 @@ class Completion:
       if account.line == "no-auto-load":
         @account.wait_until_receive_email
         def callback(_):
-          for chunk in generate(account, prompt, systemMessage, parentMessageId, presence_penalty, temperature, proxies):
+          for chunk in generate(account, prompt, systemMessage, parentMessageId, presence_penalty, temperature):
             creation_function(chunk)
       else:
         try:
-          for chunk in generate(account, prompt, systemMessage, parentMessageId, presence_penalty, temperature, proxies):
+          for chunk in generate(account, prompt, systemMessage, parentMessageId, presence_penalty, temperature):
             creation_function(chunk)
         except Exception as err:
           # due to the token is invalid, take away!
